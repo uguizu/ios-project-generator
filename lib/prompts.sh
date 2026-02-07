@@ -27,6 +27,28 @@ collect_inputs() {
     # Display Name
     DISPLAY_NAME=$(prompt_with_default "Display name (shown on device)" "$PROJECT_NAME")
 
+    # Primary Color Theme
+    echo ""
+    echo "  Primary color theme:"
+    echo "    1) Blue (default)"
+    echo "    2) Purple"
+    echo "    3) Green"
+    echo "    4) Red"
+    echo "    5) Orange"
+    echo "    6) Teal"
+    local color_choice
+    read -r -p "  Select [1-6]: " color_choice
+    case "${color_choice:-1}" in
+        1) PRIMARY_COLOR="blue" ;;
+        2) PRIMARY_COLOR="purple" ;;
+        3) PRIMARY_COLOR="green" ;;
+        4) PRIMARY_COLOR="red" ;;
+        5) PRIMARY_COLOR="orange" ;;
+        6) PRIMARY_COLOR="teal" ;;
+        *) PRIMARY_COLOR="blue" ;;
+    esac
+    echo ""
+
     # Organization Name
     while true; do
         ORG_NAME=$(prompt_with_default "Organization name" "MyOrganization")
@@ -76,6 +98,7 @@ collect_inputs() {
     echo -e "${BOLD}├─────────────────────────────────────────────┤${NC}"
     printf "│ %-18s %-25s│\n" "Project Name:" "$PROJECT_NAME"
     printf "│ %-18s %-25s│\n" "Display Name:" "$DISPLAY_NAME"
+    printf "│ %-18s %-25s│\n" "Primary Color:" "$PRIMARY_COLOR"
     printf "│ %-18s %-25s│\n" "Organization:" "$ORG_NAME"
     printf "│ %-18s %-25s│\n" "Bundle ID Prefix:" "$BUNDLE_ID_PREFIX"
     printf "│ %-18s %-25s│\n" "Deployment Target:" "iOS $DEPLOYMENT_TARGET"

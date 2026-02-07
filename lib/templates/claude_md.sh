@@ -52,7 +52,7 @@ xcodebuild test -scheme ${PROJECT_NAME} \\
 - Follow Swift API Design Guidelines
 - Keep views small and composable
 - Use MVVM pattern for view models
-- Use Material Design 3 color tokens for all colors (\`MaterialColors\` for UIKit, \`Color.Material\` for SwiftUI)
+- Use Material Design 3 color tokens for all colors (\`ThemeColors\` for UIKit, \`Color.Theme\` for SwiftUI)
 EOF
 
     if [[ "$SWIFT_VERSION" == "6" ]]; then
@@ -79,7 +79,7 @@ EOF
 - \`Sources/Modules/Features/ContentView.swift\` — Main content view
 - \`Sources/Configuration/Debug.xcconfig\` — Debug build configuration
 - \`Sources/Configuration/Release.xcconfig\` — Release build configuration
-- \`Sources/Resources/MaterialColors.swift\` — Material 3 UIColor definitions (light/dark)
-- \`Sources/Resources/Color+MaterialColors.swift\` — SwiftUI Color wrappers (\`Color.Material.xxx\`)
+- \`Sources/Resources/ThemeColors.swift\` — Material 3 UIColor definitions (light/dark)
+- \`Sources/Resources/Color+ThemeColors.swift\` — SwiftUI Color wrappers (\`Color.Theme.xxx\`)
 EOF
 }

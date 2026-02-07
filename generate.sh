@@ -57,10 +57,10 @@ main() {
     generate_services "$base_dir"
     print_success "Services and models generated."
 
-    print_step 8 $total_steps "Generating Material 3 color system..."
-    generate_material_colors "$base_dir"
+    print_step 8 $total_steps "Generating theme color system..."
+    generate_theme_colors "$base_dir"
     generate_color_extensions "$base_dir"
-    print_success "MaterialColors.swift and Color+MaterialColors.swift generated."
+    print_success "ThemeColors.swift and Color+ThemeColors.swift generated."
 
     print_step 9 $total_steps "Generating configuration files..."
     generate_configuration "$base_dir"
