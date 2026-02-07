@@ -4,7 +4,14 @@
 A self-contained bash script (`generate.sh`) that interactively generates iOS/SwiftUI projects scaffolded with XcodeGen.
 
 ## Project Structure
-- `generate.sh` — The entire generator. All templates are embedded as heredocs. Single file, no external dependencies.
+- `generate.sh` — Entry point. Sources all lib modules and runs `main()`.
+- `lib/utils.sh` — Colors, formatting, print helpers
+- `lib/validation.sh` — Input validation functions
+- `lib/prompts.sh` — Interactive prompts and input collection
+- `lib/scaffold.sh` — Directory structure creation
+- `lib/git.sh` — Git init and post-generation summary
+- `lib/templates/` — Heredoc template generators:
+  - `project_yml.sh`, `gitignore.sh`, `swift_sources.sh`, `tests.sh`, `claude_md.sh`
 
 ## How It Works
 1. User runs `./generate.sh`
@@ -14,15 +21,12 @@ A self-contained bash script (`generate.sh`) that interactively generates iOS/Sw
 5. Optionally initializes a git repo with initial commit
 
 ## Modifying Templates
-All generated file templates are in heredoc blocks inside their respective `generate_*` functions:
-- `generate_project_yml()` — XcodeGen project spec
-- `generate_gitignore()` — git ignore rules
-- `generate_app_swift()` — @main SwiftUI entry point
-- `generate_content_view()` — ContentView (conditional on deployment target for preview syntax)
-- `generate_assets()` — Asset catalog JSON files
-- `generate_unit_tests()` — Unit tests (conditional on Swift version: Swift Testing vs XCTest)
-- `generate_ui_tests()` — UI tests (always XCTest/XCUITest)
-- `generate_claude_md()` — Project intelligence file
+Each template lives in its own file under `lib/templates/`:
+- `lib/templates/project_yml.sh` — `generate_project_yml()` — XcodeGen project spec
+- `lib/templates/gitignore.sh` — `generate_gitignore()` — git ignore rules
+- `lib/templates/swift_sources.sh` — `generate_app_swift()`, `generate_content_view()`, `generate_assets()`
+- `lib/templates/tests.sh` — `generate_unit_tests()`, `generate_ui_tests()`
+- `lib/templates/claude_md.sh` — `generate_claude_md()` — project intelligence file
 
 ## Compatibility
 - Targets macOS bash 3.2 (ships with macOS) — no bash 4+ features used
