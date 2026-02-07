@@ -162,18 +162,6 @@ final class SampleService: SampleServiceProtocol {
 EOF
 }
 
-# ─── Resources ───────────────────────────────────────────────────────────────
-
-generate_resources() {
-    local base_dir="$1"
-
-    cat <<EOF > "${base_dir}/Sources/Resources/Colors.swift"
-import SwiftUI
-
-// TODO: Define app color constants
-EOF
-}
-
 # ─── Configuration ───────────────────────────────────────────────────────────
 
 generate_configuration() {

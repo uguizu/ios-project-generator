@@ -27,7 +27,7 @@ ${PROJECT_NAME} is an iOS application built with SwiftUI targeting iOS ${DEPLOYM
 - \`Sources/Network/\` — Network client and API layer
 - \`Sources/Services/Models/\` — Data models
 - \`Sources/Services/Implements/\` — Service protocols and implementations
-- \`Sources/Resources/\` — Colors, images, and asset catalogs
+- \`Sources/Resources/\` — Material 3 color system, images, and asset catalogs
 - \`Sources/Configuration/\` — xcconfig files and generated Info.plist
 - \`Tests/${PROJECT_NAME}Tests/\` — Unit tests
 - \`UITests/${PROJECT_NAME}UITests/\` — UI tests
@@ -52,6 +52,7 @@ xcodebuild test -scheme ${PROJECT_NAME} \\
 - Follow Swift API Design Guidelines
 - Keep views small and composable
 - Use MVVM pattern for view models
+- Use Material Design 3 color tokens for all colors (\`MaterialColors\` for UIKit, \`Color.Material\` for SwiftUI)
 EOF
 
     if [[ "$SWIFT_VERSION" == "6" ]]; then
@@ -78,5 +79,7 @@ EOF
 - \`Sources/Modules/Features/ContentView.swift\` — Main content view
 - \`Sources/Configuration/Debug.xcconfig\` — Debug build configuration
 - \`Sources/Configuration/Release.xcconfig\` — Release build configuration
+- \`Sources/Resources/MaterialColors.swift\` — Material 3 UIColor definitions (light/dark)
+- \`Sources/Resources/Color+MaterialColors.swift\` — SwiftUI Color wrappers (\`Color.Material.xxx\`)
 EOF
 }

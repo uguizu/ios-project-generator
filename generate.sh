@@ -12,6 +12,7 @@ source "${SCRIPT_DIR}/lib/scaffold.sh"
 source "${SCRIPT_DIR}/lib/templates/project_yml.sh"
 source "${SCRIPT_DIR}/lib/templates/gitignore.sh"
 source "${SCRIPT_DIR}/lib/templates/swift_sources.sh"
+source "${SCRIPT_DIR}/lib/templates/colors.sh"
 source "${SCRIPT_DIR}/lib/templates/tests.sh"
 source "${SCRIPT_DIR}/lib/templates/claude_md.sh"
 source "${SCRIPT_DIR}/lib/git.sh"
@@ -19,7 +20,7 @@ source "${SCRIPT_DIR}/lib/git.sh"
 # ─── Main ─────────────────────────────────────────────────────────────────────
 
 main() {
-    local total_steps=10
+    local total_steps=11
 
     print_banner
     collect_inputs
@@ -54,19 +55,23 @@ main() {
 
     print_step 7 $total_steps "Generating services layer..."
     generate_services "$base_dir"
-    generate_resources "$base_dir"
-    print_success "Services, models, and resources generated."
+    print_success "Services and models generated."
 
-    print_step 8 $total_steps "Generating configuration files..."
+    print_step 8 $total_steps "Generating Material 3 color system..."
+    generate_material_colors "$base_dir"
+    generate_color_extensions "$base_dir"
+    print_success "MaterialColors.swift and Color+MaterialColors.swift generated."
+
+    print_step 9 $total_steps "Generating configuration files..."
     generate_configuration "$base_dir"
     print_success "xcconfig files generated."
 
-    print_step 9 $total_steps "Generating test files..."
+    print_step 10 $total_steps "Generating test files..."
     generate_unit_tests "$base_dir"
     generate_ui_tests "$base_dir"
     print_success "Unit test and UI test files generated."
 
-    print_step 10 $total_steps "Generating CLAUDE.md..."
+    print_step 11 $total_steps "Generating CLAUDE.md..."
     generate_claude_md "$base_dir"
     print_success "CLAUDE.md generated."
 
