@@ -48,3 +48,12 @@ validate_swift_version() {
     fi
     return 0
 }
+
+validate_hex_color() {
+    local hex="$1"
+    if [[ ! "$hex" =~ ^#?[0-9A-Fa-f]{6}$ ]]; then
+        print_error "Hex color must be in format #RRGGBB or RRGGBB (e.g., #6750A4)."
+        return 1
+    fi
+    return 0
+}

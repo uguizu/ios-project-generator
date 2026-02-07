@@ -812,6 +812,19 @@ _set_theme_palette() {
             C_SCRIM_D="red: 0.000, green: 0.000, blue: 0.000, alpha: 1"
             C_SCRIM_D_HEX="#000000"
             ;;
+        custom)
+            # Generate palette from custom hex using bundled M3 engine (JavaScriptCore)
+            local engine_path
+            engine_path="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../m3_engine.js"
+            local js_output
+            js_output=$(osascript -l JavaScript "$engine_path" "#${PRIMARY_COLOR_HEX}" 2>&1)
+            if [ $? -ne 0 ]; then
+                print_error "Failed to generate color palette from #${PRIMARY_COLOR_HEX}"
+                print_error "$js_output"
+                exit 1
+            fi
+            eval "$js_output"
+            ;;
     esac
 }
 
@@ -822,11 +835,16 @@ generate_theme_colors() {
 
     _set_theme_palette "$PRIMARY_COLOR"
 
+    local theme_label="${PRIMARY_COLOR}"
+    if [[ "$PRIMARY_COLOR" == "custom" ]]; then
+        theme_label="custom (#${PRIMARY_COLOR_HEX})"
+    fi
+
     cat <<EOF > "${base_dir}/Sources/Resources/ThemeColors.swift"
 import UIKit
 
 /// Material Design 3 color tokens with automatic light/dark mode support.
-/// Theme: ${PRIMARY_COLOR} — Reference: https://m3.material.io/styles/color/roles
+/// Theme: ${theme_label} — Reference: https://m3.material.io/styles/color/roles
 public enum ThemeColors {
 
     // MARK: - Primary

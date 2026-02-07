@@ -36,8 +36,9 @@ collect_inputs() {
     echo "    4) Red"
     echo "    5) Orange"
     echo "    6) Teal"
+    echo "    7) Custom (enter hex color)"
     local color_choice
-    read -r -p "  Select [1-6]: " color_choice
+    read -r -p "  Select [1-7]: " color_choice
     case "${color_choice:-1}" in
         1) PRIMARY_COLOR="blue" ;;
         2) PRIMARY_COLOR="purple" ;;
@@ -45,6 +46,19 @@ collect_inputs() {
         4) PRIMARY_COLOR="red" ;;
         5) PRIMARY_COLOR="orange" ;;
         6) PRIMARY_COLOR="teal" ;;
+        7)
+            while true; do
+                local hex_input
+                read -r -p "  Enter hex color (e.g., #6750A4): " hex_input
+                if validate_hex_color "$hex_input"; then
+                    PRIMARY_COLOR="custom"
+                    # Normalize: ensure leading # and uppercase
+                    hex_input="${hex_input#\#}"
+                    PRIMARY_COLOR_HEX=$(echo "$hex_input" | tr '[:lower:]' '[:upper:]')
+                    break
+                fi
+            done
+            ;;
         *) PRIMARY_COLOR="blue" ;;
     esac
     echo ""
@@ -98,7 +112,11 @@ collect_inputs() {
     echo -e "${BOLD}├─────────────────────────────────────────────┤${NC}"
     printf "│ %-18s %-25s│\n" "Project Name:" "$PROJECT_NAME"
     printf "│ %-18s %-25s│\n" "Display Name:" "$DISPLAY_NAME"
-    printf "│ %-18s %-25s│\n" "Primary Color:" "$PRIMARY_COLOR"
+    if [[ "$PRIMARY_COLOR" == "custom" ]]; then
+        printf "│ %-18s %-25s│\n" "Primary Color:" "custom (#$PRIMARY_COLOR_HEX)"
+    else
+        printf "│ %-18s %-25s│\n" "Primary Color:" "$PRIMARY_COLOR"
+    fi
     printf "│ %-18s %-25s│\n" "Organization:" "$ORG_NAME"
     printf "│ %-18s %-25s│\n" "Bundle ID Prefix:" "$BUNDLE_ID_PREFIX"
     printf "│ %-18s %-25s│\n" "Deployment Target:" "iOS $DEPLOYMENT_TARGET"

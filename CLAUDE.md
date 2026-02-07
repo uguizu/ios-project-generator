@@ -10,12 +10,13 @@ A self-contained bash script (`generate.sh`) that interactively generates iOS/Sw
 - `lib/prompts.sh` — Interactive prompts and input collection
 - `lib/scaffold.sh` — Directory structure creation
 - `lib/git.sh` — Git init and post-generation summary
+- `lib/m3_engine.js` — Bundled M3 color algorithm (JavaScriptCore, run via `osascript`)
 - `lib/templates/` — Heredoc template generators:
-  - `project_yml.sh`, `gitignore.sh`, `swift_sources.sh`, `tests.sh`, `claude_md.sh`
+  - `project_yml.sh`, `gitignore.sh`, `swift_sources.sh`, `colors.sh`, `tests.sh`, `claude_md.sh`
 
 ## How It Works
 1. User runs `./generate.sh`
-2. Script prompts for: project name, org name, bundle ID prefix, deployment target, Swift version, output dir
+2. Script prompts for: project name, display name, primary color (6 presets + custom hex), org name, bundle ID prefix, deployment target, Swift version, output dir
 3. Validates all inputs (project name format, bundle ID format, deployment target >= 15.0)
 4. Generates a complete project directory with: `project.yml`, `.gitignore`, SwiftUI source files, test files, `CLAUDE.md`
 5. Optionally initializes a git repo with initial commit
@@ -30,7 +31,7 @@ Each template lives in its own file under `lib/templates/`:
 
 ## Compatibility
 - Targets macOS bash 3.2 (ships with macOS) — no bash 4+ features used
-- No external dependencies required to run the generator itself
+- Custom hex colors use `osascript -l JavaScript` (JavaScriptCore, ships with macOS) to run the bundled M3 engine
 - Generated projects require `xcodegen` (`brew install xcodegen`) to produce `.xcodeproj`
 
 ## Git Conventions
