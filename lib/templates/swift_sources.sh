@@ -4,7 +4,7 @@
 generate_app_swift() {
     local base_dir="$1"
 
-    cat <<EOF > "${base_dir}/Sources/${PROJECT_NAME}/${PROJECT_NAME}App.swift"
+    cat <<EOF > "${base_dir}/Sources/${PROJECT_NAME}App.swift"
 import SwiftUI
 
 @main
@@ -23,7 +23,7 @@ generate_content_view() {
     local major="${DEPLOYMENT_TARGET%%.*}"
 
     if [ "$major" -ge 17 ]; then
-        cat <<EOF > "${base_dir}/Sources/${PROJECT_NAME}/ContentView.swift"
+        cat <<EOF > "${base_dir}/Sources/Modules/Features/ContentView.swift"
 import SwiftUI
 
 struct ContentView: View {
@@ -43,7 +43,7 @@ struct ContentView: View {
 }
 EOF
     else
-        cat <<EOF > "${base_dir}/Sources/${PROJECT_NAME}/ContentView.swift"
+        cat <<EOF > "${base_dir}/Sources/Modules/Features/ContentView.swift"
 import SwiftUI
 
 struct ContentView: View {
@@ -69,7 +69,7 @@ EOF
 
 generate_assets() {
     local base_dir="$1"
-    local assets_dir="${base_dir}/Sources/${PROJECT_NAME}/Assets.xcassets"
+    local assets_dir="${base_dir}/Sources/Resources/Images/Assets.xcassets"
 
     # Root Contents.json
     cat <<'JSON' > "${assets_dir}/Contents.json"
@@ -112,14 +112,80 @@ JSON
   }
 }
 JSON
-
-    # Preview Assets
-    cat <<'JSON' > "${base_dir}/Sources/${PROJECT_NAME}/Preview Content/Preview Assets.xcassets/Contents.json"
-{
-  "info" : {
-    "author" : "xcode",
-    "version" : 1
-  }
 }
-JSON
+
+# ─── Network ─────────────────────────────────────────────────────────────────
+
+generate_network() {
+    local base_dir="$1"
+
+    cat <<EOF > "${base_dir}/Sources/Network/NetworkClient.swift"
+import Foundation
+
+// TODO: Implement network client
+EOF
+}
+
+# ─── Services ────────────────────────────────────────────────────────────────
+
+generate_services() {
+    local base_dir="$1"
+
+    # Sample Model
+    cat <<EOF > "${base_dir}/Sources/Services/Models/SampleModel.swift"
+import Foundation
+
+struct SampleModel: Identifiable {
+    let id: UUID
+    let name: String
+}
+EOF
+
+    # Service Protocol
+    cat <<EOF > "${base_dir}/Sources/Services/Implements/SampleServiceProtocol.swift"
+import Foundation
+
+protocol SampleServiceProtocol {
+    func fetchSamples() async throws -> [SampleModel]
+}
+EOF
+
+    # Service Implementation
+    cat <<EOF > "${base_dir}/Sources/Services/Implements/SampleService.swift"
+import Foundation
+
+final class SampleService: SampleServiceProtocol {
+    func fetchSamples() async throws -> [SampleModel] {
+        []
+    }
+}
+EOF
+}
+
+# ─── Resources ───────────────────────────────────────────────────────────────
+
+generate_resources() {
+    local base_dir="$1"
+
+    cat <<EOF > "${base_dir}/Sources/Resources/Colors.swift"
+import SwiftUI
+
+// TODO: Define app color constants
+EOF
+}
+
+# ─── Configuration ───────────────────────────────────────────────────────────
+
+generate_configuration() {
+    local base_dir="$1"
+
+    cat <<EOF > "${base_dir}/Sources/Configuration/Debug.xcconfig"
+// Debug.xcconfig
+// Configuration settings for Debug builds
+EOF
+
+    cat <<EOF > "${base_dir}/Sources/Configuration/Release.xcconfig"
+// Release.xcconfig
+// Configuration settings for Release builds
+EOF
 }

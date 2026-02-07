@@ -11,6 +11,10 @@ configs:
   Debug: debug
   Release: release
 
+configFiles:
+  Debug: Sources/Configuration/Debug.xcconfig
+  Release: Sources/Configuration/Release.xcconfig
+
 settings:
   base:
     SWIFT_VERSION: "${SWIFT_VERSION}"
@@ -36,7 +40,12 @@ targets:
     platform: iOS
     deploymentTarget: "${DEPLOYMENT_TARGET}"
     sources:
-      - path: Sources/${PROJECT_NAME}
+      - path: Sources
+        excludes:
+          - "Configuration/*.xcconfig"
+    configFiles:
+      Debug: Sources/Configuration/Debug.xcconfig
+      Release: Sources/Configuration/Release.xcconfig
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: ${FULL_BUNDLE_ID}
@@ -50,9 +59,9 @@ targets:
         CODE_SIGN_STYLE: Automatic
         ENABLE_PREVIEWS: YES
     info:
-      path: Sources/${PROJECT_NAME}/Info.plist
+      path: Sources/Configuration/Info.plist
       properties:
-        CFBundleDisplayName: ${PROJECT_NAME}
+        CFBundleDisplayName: ${DISPLAY_NAME}
         CFBundleShortVersionString: "\$(MARKETING_VERSION)"
         CFBundleVersion: "\$(CURRENT_PROJECT_VERSION)"
         UILaunchScreen: {}

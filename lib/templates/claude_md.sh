@@ -22,9 +22,15 @@ ${PROJECT_NAME} is an iOS application built with SwiftUI targeting iOS ${DEPLOYM
 
 ## Architecture
 - SwiftUI app lifecycle (@main)
-- Source files: \`Sources/${PROJECT_NAME}/\`
-- Unit tests: \`Tests/${PROJECT_NAME}Tests/\`
-- UI tests: \`UITests/${PROJECT_NAME}UITests/\`
+- \`Sources/\` — App entry point (\`${PROJECT_NAME}App.swift\`)
+- \`Sources/Modules/Features/\` — Feature views (SwiftUI)
+- \`Sources/Network/\` — Network client and API layer
+- \`Sources/Services/Models/\` — Data models
+- \`Sources/Services/Implements/\` — Service protocols and implementations
+- \`Sources/Resources/\` — Colors, images, and asset catalogs
+- \`Sources/Configuration/\` — xcconfig files and generated Info.plist
+- \`Tests/${PROJECT_NAME}Tests/\` — Unit tests
+- \`UITests/${PROJECT_NAME}UITests/\` — UI tests
 
 ## Build & Test Commands
 \`\`\`bash
@@ -68,7 +74,9 @@ EOF
 
 ## Key Files
 - \`project.yml\` — XcodeGen project specification (SOURCE OF TRUTH)
-- \`Sources/${PROJECT_NAME}/${PROJECT_NAME}App.swift\` — App entry point
-- \`Sources/${PROJECT_NAME}/ContentView.swift\` — Main content view
+- \`Sources/${PROJECT_NAME}App.swift\` — App entry point
+- \`Sources/Modules/Features/ContentView.swift\` — Main content view
+- \`Sources/Configuration/Debug.xcconfig\` — Debug build configuration
+- \`Sources/Configuration/Release.xcconfig\` — Release build configuration
 EOF
 }

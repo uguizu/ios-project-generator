@@ -15,10 +15,17 @@ create_directory_structure() {
         rm -rf "$base_dir"
     fi
 
-    mkdir -p "${base_dir}/Sources/${PROJECT_NAME}"
-    mkdir -p "${base_dir}/Sources/${PROJECT_NAME}/Assets.xcassets/AccentColor.colorset"
-    mkdir -p "${base_dir}/Sources/${PROJECT_NAME}/Assets.xcassets/AppIcon.appiconset"
-    mkdir -p "${base_dir}/Sources/${PROJECT_NAME}/Preview Content/Preview Assets.xcassets"
+    # App sources
+    mkdir -p "${base_dir}/Sources"
+    mkdir -p "${base_dir}/Sources/Modules/Features"
+    mkdir -p "${base_dir}/Sources/Network"
+    mkdir -p "${base_dir}/Sources/Services/Models"
+    mkdir -p "${base_dir}/Sources/Services/Implements"
+    mkdir -p "${base_dir}/Sources/Resources/Images/Assets.xcassets/AccentColor.colorset"
+    mkdir -p "${base_dir}/Sources/Resources/Images/Assets.xcassets/AppIcon.appiconset"
+    mkdir -p "${base_dir}/Sources/Configuration"
+
+    # Tests
     mkdir -p "${base_dir}/Tests/${PROJECT_NAME}Tests"
     mkdir -p "${base_dir}/UITests/${PROJECT_NAME}UITests"
 }

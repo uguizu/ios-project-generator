@@ -24,6 +24,9 @@ collect_inputs() {
         fi
     done
 
+    # Display Name
+    DISPLAY_NAME=$(prompt_with_default "Display name (shown on device)" "$PROJECT_NAME")
+
     # Organization Name
     while true; do
         ORG_NAME=$(prompt_with_default "Organization name" "MyOrganization")
@@ -72,6 +75,7 @@ collect_inputs() {
     echo -e "${BOLD}│ Project Configuration Summary               │${NC}"
     echo -e "${BOLD}├─────────────────────────────────────────────┤${NC}"
     printf "│ %-18s %-25s│\n" "Project Name:" "$PROJECT_NAME"
+    printf "│ %-18s %-25s│\n" "Display Name:" "$DISPLAY_NAME"
     printf "│ %-18s %-25s│\n" "Organization:" "$ORG_NAME"
     printf "│ %-18s %-25s│\n" "Bundle ID Prefix:" "$BUNDLE_ID_PREFIX"
     printf "│ %-18s %-25s│\n" "Deployment Target:" "iOS $DEPLOYMENT_TARGET"
