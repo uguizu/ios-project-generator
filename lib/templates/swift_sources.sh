@@ -23,7 +23,7 @@ generate_content_view() {
     local major="${DEPLOYMENT_TARGET%%.*}"
 
     if [ "$major" -ge 17 ]; then
-        cat <<EOF > "${base_dir}/Sources/Modules/Features/ContentView.swift"
+        cat <<EOF > "${base_dir}/Sources/Modules/Root/ContentView.swift"
 import SwiftUI
 
 struct ContentView: View {
@@ -43,7 +43,7 @@ struct ContentView: View {
 }
 EOF
     else
-        cat <<EOF > "${base_dir}/Sources/Modules/Features/ContentView.swift"
+        cat <<EOF > "${base_dir}/Sources/Modules/Root/ContentView.swift"
 import SwiftUI
 
 struct ContentView: View {

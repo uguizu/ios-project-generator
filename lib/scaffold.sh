@@ -17,7 +17,7 @@ create_directory_structure() {
 
     # App sources
     mkdir -p "${base_dir}/Sources"
-    mkdir -p "${base_dir}/Sources/Modules/Features"
+    mkdir -p "${base_dir}/Sources/Modules/Root"
     mkdir -p "${base_dir}/Sources/Network"
     mkdir -p "${base_dir}/Sources/Services/Models"
     mkdir -p "${base_dir}/Sources/Services/Implements"

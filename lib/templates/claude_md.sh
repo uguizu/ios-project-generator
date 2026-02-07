@@ -23,7 +23,7 @@ ${PROJECT_NAME} is an iOS application built with SwiftUI targeting iOS ${DEPLOYM
 ## Architecture
 - SwiftUI app lifecycle (@main)
 - \`Sources/\` — App entry point (\`${PROJECT_NAME}App.swift\`)
-- \`Sources/Modules/Features/\` — Feature views (SwiftUI)
+- \`Sources/Modules/Root/\` — Root views (SwiftUI)
 - \`Sources/Network/\` — Network client and API layer
 - \`Sources/Services/Models/\` — Data models
 - \`Sources/Services/Implements/\` — Service protocols and implementations
@@ -76,7 +76,7 @@ EOF
 ## Key Files
 - \`project.yml\` — XcodeGen project specification (SOURCE OF TRUTH)
 - \`Sources/${PROJECT_NAME}App.swift\` — App entry point
-- \`Sources/Modules/Features/ContentView.swift\` — Main content view
+- \`Sources/Modules/Root/ContentView.swift\` — Main content view
 - \`Sources/Configuration/Debug.xcconfig\` — Debug build configuration
 - \`Sources/Configuration/Release.xcconfig\` — Release build configuration
 - \`Sources/Resources/ThemeColors.swift\` — Material 3 UIColor definitions (light/dark)
