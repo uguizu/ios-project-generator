@@ -53,10 +53,11 @@ main() {
     generate_network "$base_dir"
     print_success "NetworkClient.swift generated."
 
-    print_step 7 $total_steps "Generating services layer..."
+    print_step 7 $total_steps "Generating services and utilities..."
     generate_services "$base_dir"
     generate_network_mocks "$base_dir"
-    print_success "Services and models generated."
+    generate_utils "$base_dir"
+    print_success "Services, models, and utilities generated."
 
     print_step 8 $total_steps "Generating theme color system..."
     generate_theme_colors "$base_dir"

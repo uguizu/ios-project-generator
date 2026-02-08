@@ -64,6 +64,7 @@ targets:
         CFBundleDisplayName: ${DISPLAY_NAME}
         CFBundleShortVersionString: "\$(MARKETING_VERSION)"
         CFBundleVersion: "\$(CURRENT_PROJECT_VERSION)"
+        APIBaseURL: "\$(API_BASE_URL)"
         UILaunchScreen: {}
     scheme:
       testTargets:

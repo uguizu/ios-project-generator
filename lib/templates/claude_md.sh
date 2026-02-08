@@ -27,6 +27,7 @@ ${PROJECT_NAME} is an iOS application built with SwiftUI targeting iOS ${DEPLOYM
 - \`Sources/Core/Network/\` — Network client (struct-based, protocol-oriented)
 - \`Sources/Core/Services/[ServiceName]/\` — Service implementations, protocols, and API definitions
 - \`Sources/Core/Models/\` — Shared data models
+- \`Sources/Core/Utils/\` — Utility classes and configuration access
 - \`Sources/Resources/\` — Material 3 color system, images, and asset catalogs
 - \`Sources/Configuration/\` — xcconfig files and generated Info.plist
 - \`Tests/${PROJECT_NAME}Tests/\` — Unit tests
@@ -120,6 +121,44 @@ let result = try await service.fetchSamples()
 XCTAssertEqual(mockClient.requestCallCount, 1)
 \`\`\`
 
+## Configuration
+
+Application configuration values are managed through xcconfig files and accessed via the \`Configuration\` enum.
+
+### Accessing Configuration Values
+
+\`\`\`swift
+import Foundation
+
+// Get base URL for API requests
+let baseURL = Configuration.baseURL  // "https://api.example.com"
+\`\`\`
+
+### Setting Configuration Values
+
+1. Edit \`Sources/Configuration/Debug.xcconfig\`:
+\`\`\`
+API_BASE_URL = https:/\$()/staging.api.example.com
+\`\`\`
+
+2. Edit \`Sources/Configuration/Release.xcconfig\`:
+\`\`\`
+API_BASE_URL = https:/\$()/api.example.com
+\`\`\`
+
+3. Values are automatically injected into Info.plist during build via \`project.yml\`.
+
+### Usage in Services
+
+\`\`\`swift
+extension SampleAPI: Endpoint {
+    var baseURL: URL {
+        URL(string: Configuration.baseURL)!
+    }
+    // ...
+}
+\`\`\`
+
 ## Build & Test Commands
 \`\`\`bash
 # Build
@@ -168,8 +207,9 @@ EOF
 - \`Sources/Core/Network/NetworkClient.swift\` — Struct-based network client
 - \`Sources/Core/Services/Sample/\` — Sample service implementation (API, protocol, service)
 - \`Sources/Core/Models/SampleModel.swift\` — Sample data model
-- \`Sources/Configuration/Debug.xcconfig\` — Debug build configuration
-- \`Sources/Configuration/Release.xcconfig\` — Release build configuration
+- \`Sources/Core/Utils/Configuration.swift\` — Configuration enum for accessing Info.plist values
+- \`Sources/Configuration/Debug.xcconfig\` — Debug build configuration (API URLs, etc.)
+- \`Sources/Configuration/Release.xcconfig\` — Release build configuration (API URLs, etc.)
 - \`Sources/Resources/ThemeColors.swift\` — Material 3 UIColor definitions (light/dark)
 - \`Sources/Resources/Color+ThemeColors.swift\` — SwiftUI Color wrappers (\`Color.Theme.xxx\`)
 EOF

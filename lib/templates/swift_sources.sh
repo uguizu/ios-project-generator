@@ -449,8 +449,8 @@ enum SampleAPI {
 
 extension SampleAPI: Endpoint {
     var baseURL: URL {
-        // In production, load from configuration/environment
-        URL(string: "https://api.example.com")!
+        // Load from configuration (set in Debug.xcconfig / Release.xcconfig)
+        URL(string: Configuration.baseURL)!
     }
 
     var path: String {
@@ -626,10 +626,40 @@ generate_configuration() {
     cat <<EOF > "${base_dir}/Sources/Configuration/Debug.xcconfig"
 // Debug.xcconfig
 // Configuration settings for Debug builds
+
+// API Configuration
+API_BASE_URL = https:/\$()/api.example.com
 EOF
 
     cat <<EOF > "${base_dir}/Sources/Configuration/Release.xcconfig"
 // Release.xcconfig
 // Configuration settings for Release builds
+
+// API Configuration
+API_BASE_URL = https:/\$()/api.example.com
+EOF
+}
+
+# ─── Utils ────────────────────────────────────────────────────────────────────
+
+generate_utils() {
+    local base_dir="$1"
+
+    cat <<'EOF' > "${base_dir}/Sources/Core/Utils/Configuration.swift"
+import Foundation
+
+/// Application configuration values from Info.plist
+enum Configuration {
+    /// Base URL for API requests
+    ///
+    /// This value is set in Debug.xcconfig and Release.xcconfig files
+    /// and injected into Info.plist during build.
+    static var baseURL: String {
+        guard let urlString = Bundle.main.object(forInfoDictionaryKey: "APIBaseURL") as? String else {
+            fatalError("APIBaseURL not found in Info.plist. Check Debug.xcconfig and Release.xcconfig.")
+        }
+        return urlString
+    }
+}
 EOF
 }

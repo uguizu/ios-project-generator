@@ -21,6 +21,7 @@ create_directory_structure() {
     mkdir -p "${base_dir}/Sources/Core/Network"
     mkdir -p "${base_dir}/Sources/Core/Services/Sample"
     mkdir -p "${base_dir}/Sources/Core/Models"
+    mkdir -p "${base_dir}/Sources/Core/Utils"
     mkdir -p "${base_dir}/Sources/Resources/Images/Assets.xcassets/AccentColor.colorset"
     mkdir -p "${base_dir}/Sources/Resources/Images/Assets.xcassets/AppIcon.appiconset"
     mkdir -p "${base_dir}/Sources/Configuration"
