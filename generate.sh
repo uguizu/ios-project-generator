@@ -55,6 +55,7 @@ main() {
 
     print_step 7 $total_steps "Generating services layer..."
     generate_services "$base_dir"
+    generate_network_mocks "$base_dir"
     print_success "Services and models generated."
 
     print_step 8 $total_steps "Generating theme color system..."

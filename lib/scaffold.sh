@@ -18,14 +18,15 @@ create_directory_structure() {
     # App sources
     mkdir -p "${base_dir}/Sources"
     mkdir -p "${base_dir}/Sources/Modules/Root"
-    mkdir -p "${base_dir}/Sources/Network"
-    mkdir -p "${base_dir}/Sources/Services/Models"
-    mkdir -p "${base_dir}/Sources/Services/Implements"
+    mkdir -p "${base_dir}/Sources/Core/Network"
+    mkdir -p "${base_dir}/Sources/Core/Services/Sample"
+    mkdir -p "${base_dir}/Sources/Core/Models"
     mkdir -p "${base_dir}/Sources/Resources/Images/Assets.xcassets/AccentColor.colorset"
     mkdir -p "${base_dir}/Sources/Resources/Images/Assets.xcassets/AppIcon.appiconset"
     mkdir -p "${base_dir}/Sources/Configuration"
 
     # Tests
     mkdir -p "${base_dir}/Tests/${PROJECT_NAME}Tests"
+    mkdir -p "${base_dir}/Tests/${PROJECT_NAME}Tests/Mocks"
     mkdir -p "${base_dir}/UITests/${PROJECT_NAME}UITests"
 }
