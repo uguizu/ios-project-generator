@@ -10,6 +10,8 @@
 - 🧪 **Testing Ready** — Pre-configured unit and UI tests with Swift Testing (Swift 6) and XCTest (Swift 5)
 - 📦 **Zero Dependencies** — Pure bash, runs on macOS with native tools (osascript for M3 colors)
 - 🚀 **XcodeGen Integration** — Project configuration as code (`project.yml`)
+- 🎯 **CLI Support** — Interactive mode, defaults mode, or full parameter injection for automation
+- 💅 **Beautiful UI** — Color-coded prompts with icons and enhanced formatting
 
 ## Requirements
 
@@ -28,16 +30,32 @@ cd ios-start-script
 # Make the script executable (if needed)
 chmod +x generate.sh
 
-# Run the generator
+# Interactive mode - follow the prompts
 ./generate.sh
 
-# Follow the interactive prompts, then:
+# Quick generation with defaults
+./generate.sh --defaults
+
+# Custom project with CLI parameters
+./generate.sh --name MyApp --color purple --org MyCompany
+
+# Follow generation with:
 cd MyApp
 xcodegen generate
 open MyApp.xcodeproj
 ```
 
 ## Usage
+
+The generator supports three modes:
+
+### 1. Interactive Mode (Default)
+
+Run without arguments for an interactive experience with beautiful prompts:
+
+```bash
+./generate.sh
+```
 
 The generator will prompt you for:
 
@@ -52,21 +70,78 @@ The generator will prompt you for:
 8. **Output Directory** — Where to generate the project
 9. **Git Initialization** — Optionally create initial commit
 
-### Example Session
+### 2. Defaults Mode (Quick Generation)
+
+Skip all prompts and use default values:
 
 ```bash
-./generate.sh
+./generate.sh --defaults
+```
 
-Project Name: MyApp
-Display Name: My Awesome App
-Primary color theme: 1 (Blue)
-Organization: MyCompany
-Bundle ID Prefix: com.mycompany
-Deployment Target: 17.0
-Swift Version: 6
-Output Directory: .
-Initialize git? y
-Create initial commit? y
+**Default values:**
+- Project Name: `MyApp`
+- Display Name: `MyApp`
+- Primary Color: `blue`
+- Organization: `MyOrganization`
+- Bundle ID Prefix: `com.myorganization`
+- Deployment Target: `17.0`
+- Swift Version: `6`
+- Output Directory: `.`
+- Git Init: `no`
+
+### 3. Parameter Injection (Automation)
+
+Provide specific values via CLI arguments:
+
+```bash
+# Custom project with parameters
+./generate.sh --name BrandApp --color "#FF5733" --org "Cool Company" \
+              --bundle-id com.coolcompany --swift-version 6
+
+# Complete non-interactive generation
+./generate.sh --defaults --name MyApp --color purple \
+              --git-init yes --git-commit yes
+```
+
+**Available CLI Options:**
+
+| Flag | Description | Example |
+|------|-------------|---------|
+| `--defaults` | Use default values for all prompts | `--defaults` |
+| `--name <name>` | Project name | `--name MyApp` |
+| `--display-name <name>` | Display name | `--display-name "My App"` |
+| `--color <color>` | Primary color (preset or hex) | `--color purple` or `--color "#FF5733"` |
+| `--org <organization>` | Organization name | `--org "MyCompany"` |
+| `--bundle-id <prefix>` | Bundle ID prefix | `--bundle-id com.example` |
+| `--deployment-target <version>` | iOS deployment target | `--deployment-target 16.0` |
+| `--swift-version <version>` | Swift version (5 or 6) | `--swift-version 6` |
+| `--output-dir <path>` | Output directory | `--output-dir ./projects` |
+| `--git-init <yes/no>` | Initialize git repository | `--git-init yes` |
+| `--git-commit <yes/no>` | Create initial commit | `--git-commit yes` |
+| `--help, -h` | Show help message | `--help` |
+
+### Interactive UI Preview
+
+The generator features a beautiful color-coded interface:
+
+```
+╔══════════════════════════════════════════════════════════╗
+║                                                          ║
+║  📱  iOS Project Generator (XcodeGen + SwiftUI)          ║
+║                                                          ║
+╚══════════════════════════════════════════════════════════╝
+
+┌─────────────────────────────────────────────────────────┐
+│ 📋 Project Configuration
+└─────────────────────────────────────────────────────────┘
+
+  📦 Project name (default: MyApp)
+    → _
+
+  🎨 Primary color theme
+    1) Blue       (Professional, default)
+    2) Purple     (Creative)
+    ...
 ```
 
 ## Generated Project Structure
@@ -285,37 +360,49 @@ xcodebuild -scheme MyApp -sdk iphonesimulator build \
 
 ## Examples
 
-### Minimal Project (Defaults)
+### Quick Default Project
 ```bash
-./generate.sh <<EOF
-MyApp
-MyApp
-1
-
-
-17.0
-6
-.
-n
-n
-EOF
+# Generate with all defaults - no prompts
+./generate.sh --defaults
 ```
 
-### Custom Brand Color
+### Custom Project Name and Color
 ```bash
-./generate.sh <<EOF
-BrandApp
-Brand App
-7
-#FF5733
-MyCompany
-com.mycompany
-16.0
-6
-.
-y
-y
-EOF
+# Mix defaults with custom values
+./generate.sh --defaults --name BrandApp --color purple
+```
+
+### Complete Custom Configuration
+```bash
+# Specify all parameters - fully non-interactive
+./generate.sh --name AwesomeApp \
+              --display-name "Awesome App" \
+              --color "#FF5733" \
+              --org "Cool Company" \
+              --bundle-id com.coolcompany \
+              --deployment-target 16.0 \
+              --swift-version 6 \
+              --output-dir ./projects \
+              --git-init yes \
+              --git-commit yes
+```
+
+### CI/CD Integration
+```bash
+# Perfect for automated project generation
+./generate.sh --defaults \
+              --name "Project-${CI_BUILD_NUMBER}" \
+              --color blue \
+              --org "${COMPANY_NAME}" \
+              --bundle-id "${BUNDLE_PREFIX}" \
+              --git-init yes
+```
+
+### Interactive with Pre-filled Values
+```bash
+# Provide some values, get prompted for the rest
+./generate.sh --name MyApp --org MyCompany
+# Will prompt for: display name, color, bundle ID, deployment target, swift version, output dir
 ```
 
 ## Compatibility
