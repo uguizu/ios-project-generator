@@ -196,6 +196,44 @@ EOF
 
     cat <<EOF >> "${base_dir}/CLAUDE.md"
 
+## Git Conventions
+
+This project uses [Conventional Commits](https://www.conventionalcommits.org/) for all commit messages.
+
+### Format
+\`\`\`
+<type>(<scope>): <description>
+
+[optional body]
+
+[optional footer]
+\`\`\`
+
+### Types
+- \`feat\`: New feature
+- \`fix\`: Bug fix
+- \`docs\`: Documentation changes
+- \`style\`: Code style changes (formatting, missing semicolons, etc.)
+- \`refactor\`: Code refactoring without changing functionality
+- \`test\`: Adding or updating tests
+- \`chore\`: Maintenance tasks, dependency updates
+- \`build\`: Build system or external dependency changes
+- \`ci\`: CI/CD configuration changes
+- \`perf\`: Performance improvements
+
+### Examples
+\`\`\`bash
+feat(auth): add biometric authentication
+fix(network): handle timeout errors correctly
+docs(readme): update installation instructions
+refactor(network): convert NetworkClient to struct
+test(service): add unit tests for UserService
+\`\`\`
+
+### Scope
+The scope is optional but recommended. Common scopes:
+- \`auth\`, \`network\`, \`ui\`, \`api\`, \`config\`, \`test\`, \`build\`
+
 ## Dependencies
 - Managed via Swift Package Manager
 - Add packages to the \`packages\` section in \`project.yml\`, then run \`xcodegen generate\`
