@@ -17,10 +17,87 @@ source "${SCRIPT_DIR}/lib/templates/tests.sh"
 source "${SCRIPT_DIR}/lib/templates/claude_md.sh"
 source "${SCRIPT_DIR}/lib/git.sh"
 
+# ─── Argument Parsing ─────────────────────────────────────────────────────────
+
+USE_DEFAULTS="false"
+PROJECT_NAME=""
+DISPLAY_NAME=""
+PRIMARY_COLOR=""
+PRIMARY_COLOR_HEX=""
+ORG_NAME=""
+BUNDLE_ID_PREFIX=""
+DEPLOYMENT_TARGET=""
+SWIFT_VERSION=""
+OUTPUT_DIR=""
+GIT_INIT=""
+GIT_COMMIT=""
+
+parse_arguments() {
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            --help|-h)
+                print_help
+                exit 0
+                ;;
+            --defaults)
+                USE_DEFAULTS="true"
+                shift
+                ;;
+            --name)
+                PROJECT_NAME="$2"
+                shift 2
+                ;;
+            --display-name)
+                DISPLAY_NAME="$2"
+                shift 2
+                ;;
+            --color)
+                PRIMARY_COLOR="$2"
+                shift 2
+                ;;
+            --org)
+                ORG_NAME="$2"
+                shift 2
+                ;;
+            --bundle-id)
+                BUNDLE_ID_PREFIX="$2"
+                shift 2
+                ;;
+            --deployment-target)
+                DEPLOYMENT_TARGET="$2"
+                shift 2
+                ;;
+            --swift-version)
+                SWIFT_VERSION="$2"
+                shift 2
+                ;;
+            --output-dir)
+                OUTPUT_DIR="$2"
+                shift 2
+                ;;
+            --git-init)
+                GIT_INIT="$2"
+                shift 2
+                ;;
+            --git-commit)
+                GIT_COMMIT="$2"
+                shift 2
+                ;;
+            *)
+                echo -e "${RED}Error: Unknown option $1${NC}"
+                echo "Run './generate.sh --help' for usage information."
+                exit 1
+                ;;
+        esac
+    done
+}
+
 # ─── Main ─────────────────────────────────────────────────────────────────────
 
 main() {
     local total_steps=11
+
+    parse_arguments "$@"
 
     print_banner
     collect_inputs
@@ -83,4 +160,4 @@ main() {
     print_summary "$base_dir"
 }
 
-main
+main "$@"
