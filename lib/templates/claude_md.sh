@@ -29,7 +29,7 @@ ${PROJECT_NAME} is an iOS application built with SwiftUI targeting iOS ${DEPLOYM
 - \`Sources/Core/Models/\` — Shared data models
 - \`Sources/Core/Utils/\` — Utility classes and configuration access
 - \`Sources/Resources/\` — Material 3 color system, images, and asset catalogs
-- \`Sources/Configuration/\` — xcconfig files and generated Info.plist
+- \`Sources/Configuration/\` — Target-specific xcconfig files and generated Info.plist
 - \`Tests/${PROJECT_NAME}Tests/\` — Unit tests
 - \`UITests/${PROJECT_NAME}UITests/\` — UI tests
 
@@ -136,17 +136,16 @@ let baseURL = Configuration.baseURL  // "https://api.example.com"
 
 ### Setting Configuration Values
 
-1. Edit \`Sources/Configuration/Debug.xcconfig\`:
-\`\`\`
-API_BASE_URL = https:/\$()/staging.api.example.com
-\`\`\`
+Edit the target-specific xcconfig files in \`Sources/Configuration/\`:
 
-2. Edit \`Sources/Configuration/Release.xcconfig\`:
+1. \`Production.xcconfig\` — Production target:
 \`\`\`
 API_BASE_URL = https:/\$()/api.example.com
+APP_DISPLAY_NAME = ${DISPLAY_NAME}
 \`\`\`
 
-3. Values are automatically injected into Info.plist during build via \`project.yml\`.
+Values are automatically injected into Info.plist during build via \`project.yml\`.
+Each target (Production, QA, Development) has its own xcconfig with environment-specific values.
 
 ### Usage in Services
 
@@ -161,7 +160,7 @@ extension SampleAPI: Endpoint {
 
 ## Build & Test Commands
 \`\`\`bash
-# Build
+# Build Production
 xcodebuild -scheme ${PROJECT_NAME} -configuration Debug build
 
 # Run all tests
@@ -171,6 +170,25 @@ xcodebuild -scheme ${PROJECT_NAME} -configuration Debug \\
 # Run a single test
 xcodebuild test -scheme ${PROJECT_NAME} \\
   -only-testing:${PROJECT_NAME}Tests/TestClassName/testMethodName
+EOF
+
+    if [[ "$QA_TARGET" == "yes" ]]; then
+        cat <<EOF >> "${base_dir}/CLAUDE.md"
+
+# Build QA target
+xcodebuild -scheme ${PROJECT_NAME}QA -configuration Debug build
+EOF
+    fi
+
+    if [[ "$DEV_TARGET" == "yes" ]]; then
+        cat <<EOF >> "${base_dir}/CLAUDE.md"
+
+# Build Development target
+xcodebuild -scheme ${PROJECT_NAME}Dev -configuration Debug build
+EOF
+    fi
+
+    cat <<EOF >> "${base_dir}/CLAUDE.md"
 \`\`\`
 
 ## Conventions
@@ -246,8 +264,22 @@ The scope is optional but recommended. Common scopes:
 - \`Sources/Core/Services/Sample/\` — Sample service implementation (API, protocol, service)
 - \`Sources/Core/Models/SampleModel.swift\` — Sample data model
 - \`Sources/Core/Utils/Configuration.swift\` — Configuration enum for accessing Info.plist values
-- \`Sources/Configuration/Debug.xcconfig\` — Debug build configuration (API URLs, etc.)
-- \`Sources/Configuration/Release.xcconfig\` — Release build configuration (API URLs, etc.)
+- \`Sources/Configuration/Production.xcconfig\` — Production target configuration (API URLs, display name)
+EOF
+
+    if [[ "$QA_TARGET" == "yes" ]]; then
+        cat <<EOF >> "${base_dir}/CLAUDE.md"
+- \`Sources/Configuration/QA.xcconfig\` — QA target configuration
+EOF
+    fi
+
+    if [[ "$DEV_TARGET" == "yes" ]]; then
+        cat <<EOF >> "${base_dir}/CLAUDE.md"
+- \`Sources/Configuration/Development.xcconfig\` — Development target configuration
+EOF
+    fi
+
+    cat <<EOF >> "${base_dir}/CLAUDE.md"
 - \`Sources/Resources/ThemeColors.swift\` — Material 3 UIColor definitions (light/dark)
 - \`Sources/Resources/Color+ThemeColors.swift\` — SwiftUI Color wrappers (\`Color.Theme.xxx\`)
 EOF

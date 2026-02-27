@@ -40,7 +40,7 @@ collect_inputs() {
 
     # First, show all values that were provided via args
     local has_args=false
-    if [[ -n "$PROJECT_NAME" || -n "$DISPLAY_NAME" || -n "$PRIMARY_COLOR" || -n "$ORG_NAME" || -n "$BUNDLE_ID_PREFIX" || -n "$DEPLOYMENT_TARGET" || -n "$SWIFT_VERSION" || -n "$OUTPUT_DIR" ]]; then
+    if [[ -n "$PROJECT_NAME" || -n "$DISPLAY_NAME" || -n "$PRIMARY_COLOR" || -n "$ORG_NAME" || -n "$BUNDLE_ID_PREFIX" || -n "$DEPLOYMENT_TARGET" || -n "$SWIFT_VERSION" || -n "$OUTPUT_DIR" || -n "$QA_TARGET" || -n "$DEV_TARGET" ]]; then
         has_args=true
         echo -e "${DIM}Values provided via command-line arguments:${NC}"
         echo ""
@@ -58,6 +58,8 @@ collect_inputs() {
         [[ -n "$DEPLOYMENT_TARGET" ]] && echo -e "  ${BLUE}🎯${NC} Deployment target: ${GREEN}$DEPLOYMENT_TARGET${NC}"
         [[ -n "$SWIFT_VERSION" ]] && echo -e "  ${BLUE}⚡${NC} Swift version: ${GREEN}$SWIFT_VERSION${NC}"
         [[ -n "$OUTPUT_DIR" ]] && echo -e "  ${BLUE}📁${NC} Output directory: ${GREEN}$OUTPUT_DIR${NC}"
+        [[ -n "$QA_TARGET" ]] && echo -e "  ${BLUE}🎯${NC} QA target: ${GREEN}$QA_TARGET${NC}"
+        [[ -n "$DEV_TARGET" ]] && echo -e "  ${BLUE}🎯${NC} Dev target: ${GREEN}$DEV_TARGET${NC}"
         echo ""
     fi
 
@@ -174,9 +176,38 @@ collect_inputs() {
         OUTPUT_DIR=$(prompt_fancy "Output directory" "." "📁")
     fi
 
+    # QA Target
+    if [[ -z "$QA_TARGET" ]]; then
+        local qa_choice
+        echo -ne "  ${CYAN}◆${NC} Generate QA target? ${DIM}[Y/n]${NC}: "
+        read -r qa_choice
+        QA_TARGET="${qa_choice:-Y}"
+    fi
+
+    # Development Target
+    if [[ -z "$DEV_TARGET" ]]; then
+        local dev_choice
+        echo -ne "  ${CYAN}◆${NC} Generate Development target? ${DIM}[Y/n]${NC}: "
+        read -r dev_choice
+        DEV_TARGET="${dev_choice:-Y}"
+    fi
+
     # Derived values
     PROJECT_NAME_LOWER=$(echo "$PROJECT_NAME" | tr '[:upper:]' '[:lower:]')
     FULL_BUNDLE_ID="${BUNDLE_ID_PREFIX}.${PROJECT_NAME_LOWER}"
+
+    # Normalize target flags
+    if [[ "${QA_TARGET}" =~ ^[Yy]$ || "${QA_TARGET}" == "yes" ]]; then
+        QA_TARGET="yes"
+    else
+        QA_TARGET="no"
+    fi
+
+    if [[ "${DEV_TARGET}" =~ ^[Yy]$ || "${DEV_TARGET}" == "yes" ]]; then
+        DEV_TARGET="yes"
+    else
+        DEV_TARGET="no"
+    fi
 
     # Show summary and confirm
     show_configuration_summary
@@ -205,6 +236,21 @@ apply_default_values() {
     OUTPUT_DIR="${OUTPUT_DIR:-.}"
     GIT_INIT="${GIT_INIT:-no}"
     GIT_COMMIT="${GIT_COMMIT:-no}"
+    QA_TARGET="${QA_TARGET:-yes}"
+    DEV_TARGET="${DEV_TARGET:-yes}"
+
+    # Normalize target flags
+    if [[ "${QA_TARGET}" =~ ^[Yy]$ || "${QA_TARGET}" == "yes" ]]; then
+        QA_TARGET="yes"
+    else
+        QA_TARGET="no"
+    fi
+
+    if [[ "${DEV_TARGET}" =~ ^[Yy]$ || "${DEV_TARGET}" == "yes" ]]; then
+        DEV_TARGET="yes"
+    else
+        DEV_TARGET="no"
+    fi
 
     # Validate provided values
     if ! validate_project_name "$PROJECT_NAME"; then
@@ -254,6 +300,8 @@ show_configuration_summary() {
     printf "${CYAN}║${NC}  %-22s ${GREEN}%-30s${NC} ${CYAN}║${NC}\n" "Swift Version:" "$SWIFT_VERSION"
     printf "${CYAN}║${NC}  %-22s ${GREEN}%-30s${NC} ${CYAN}║${NC}\n" "Output Directory:" "$OUTPUT_DIR/$PROJECT_NAME"
     printf "${CYAN}║${NC}  %-22s ${GREEN}%-30s${NC} ${CYAN}║${NC}\n" "Full Bundle ID:" "$FULL_BUNDLE_ID"
+    printf "${CYAN}║${NC}  %-22s ${GREEN}%-30s${NC} ${CYAN}║${NC}\n" "QA Target:" "$QA_TARGET"
+    printf "${CYAN}║${NC}  %-22s ${GREEN}%-30s${NC} ${CYAN}║${NC}\n" "Dev Target:" "$DEV_TARGET"
     echo -e "${CYAN}╚═══════════════════════════════════════════════════════════╝${NC}"
     echo ""
 }
