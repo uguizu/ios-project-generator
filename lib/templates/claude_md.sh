@@ -172,6 +172,7 @@ xcodebuild test -scheme ${PROJECT_NAME} \\
   -only-testing:${PROJECT_NAME}Tests/TestClassName/testMethodName
 EOF
 
+    # NOTE: markdown code fence left open above; QA/Dev commands appended conditionally, closed below
     if [[ "$QA_TARGET" == "yes" ]]; then
         cat <<EOF >> "${base_dir}/CLAUDE.md"
 

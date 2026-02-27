@@ -26,6 +26,17 @@ prompt_fancy() {
     echo "${input:-$default_value}"
 }
 
+# ─── Helpers ──────────────────────────────────────────────────────────────────
+
+normalize_yes_no() {
+    local value="$1"
+    if [[ "${value}" =~ ^[Yy]$ || "${value}" == "yes" ]]; then
+        echo "yes"
+    else
+        echo "no"
+    fi
+}
+
 # ─── Input Collection ──────────────────────────────────────────────────────────
 
 collect_inputs() {
@@ -197,17 +208,8 @@ collect_inputs() {
     FULL_BUNDLE_ID="${BUNDLE_ID_PREFIX}.${PROJECT_NAME_LOWER}"
 
     # Normalize target flags
-    if [[ "${QA_TARGET}" =~ ^[Yy]$ || "${QA_TARGET}" == "yes" ]]; then
-        QA_TARGET="yes"
-    else
-        QA_TARGET="no"
-    fi
-
-    if [[ "${DEV_TARGET}" =~ ^[Yy]$ || "${DEV_TARGET}" == "yes" ]]; then
-        DEV_TARGET="yes"
-    else
-        DEV_TARGET="no"
-    fi
+    QA_TARGET=$(normalize_yes_no "$QA_TARGET")
+    DEV_TARGET=$(normalize_yes_no "$DEV_TARGET")
 
     # Show summary and confirm
     show_configuration_summary
@@ -236,21 +238,8 @@ apply_default_values() {
     OUTPUT_DIR="${OUTPUT_DIR:-.}"
     GIT_INIT="${GIT_INIT:-no}"
     GIT_COMMIT="${GIT_COMMIT:-no}"
-    QA_TARGET="${QA_TARGET:-yes}"
-    DEV_TARGET="${DEV_TARGET:-yes}"
-
-    # Normalize target flags
-    if [[ "${QA_TARGET}" =~ ^[Yy]$ || "${QA_TARGET}" == "yes" ]]; then
-        QA_TARGET="yes"
-    else
-        QA_TARGET="no"
-    fi
-
-    if [[ "${DEV_TARGET}" =~ ^[Yy]$ || "${DEV_TARGET}" == "yes" ]]; then
-        DEV_TARGET="yes"
-    else
-        DEV_TARGET="no"
-    fi
+    QA_TARGET=$(normalize_yes_no "${QA_TARGET:-yes}")
+    DEV_TARGET=$(normalize_yes_no "${DEV_TARGET:-yes}")
 
     # Validate provided values
     if ! validate_project_name "$PROJECT_NAME"; then
