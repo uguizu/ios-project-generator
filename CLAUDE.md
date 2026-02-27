@@ -16,7 +16,7 @@ A self-contained bash script (`generate.sh`) that interactively generates iOS/Sw
 
 ## How It Works
 1. User runs `./generate.sh`
-2. Script prompts for: project name, display name, primary color (6 presets + custom hex), org name, bundle ID prefix, deployment target, Swift version, output dir
+2. Script prompts for: project name, display name, primary color (6 presets + custom hex), org name, bundle ID prefix, deployment target, Swift version, output dir, QA target (Y/n), Dev target (Y/n)
 3. Validates all inputs (project name format, bundle ID format, deployment target >= 15.0)
 4. Generates a complete project directory with: `project.yml`, `.gitignore`, SwiftUI source files, test files, `CLAUDE.md`
 5. Optionally initializes a git repo with initial commit
@@ -25,9 +25,24 @@ A self-contained bash script (`generate.sh`) that interactively generates iOS/Sw
 Each template lives in its own file under `lib/templates/`:
 - `lib/templates/project_yml.sh` — `generate_project_yml()` — XcodeGen project spec
 - `lib/templates/gitignore.sh` — `generate_gitignore()` — git ignore rules
-- `lib/templates/swift_sources.sh` — `generate_app_swift()`, `generate_content_view()`, `generate_assets()`
+- `lib/templates/swift_sources.sh` — `generate_app_swift()`, `generate_content_view()`, `generate_assets()`, `generate_configuration()`
 - `lib/templates/tests.sh` — `generate_unit_tests()`, `generate_ui_tests()`
 - `lib/templates/claude_md.sh` — `generate_claude_md()` — project intelligence file
+
+## Multi-Target Architecture
+Generated projects support three app targets (QA and Dev are optional, default: yes):
+- **Production** (`${PROJECT_NAME}`) — original display name, production API URL
+- **QA** (`${PROJECT_NAME}QA`) — appends " QA" to display name, `.qa` bundle ID suffix
+- **Development** (`${PROJECT_NAME}Dev`) — appends " Dev" to display name, `.dev` bundle ID suffix
+
+Config files are tied to **targets** (not build configurations):
+- `Sources/Configuration/Production.xcconfig` — always generated
+- `Sources/Configuration/QA.xcconfig` — generated when `QA_TARGET=yes`
+- `Sources/Configuration/Development.xcconfig` — generated when `DEV_TARGET=yes`
+
+Each xcconfig sets `API_BASE_URL` and `APP_DISPLAY_NAME`. Both Debug and Release builds of the same target use the same xcconfig. Debug/Release only control compiler optimization.
+
+CLI args: `--qa-target <yes/no>`, `--dev-target <yes/no>`. Global vars: `QA_TARGET`, `DEV_TARGET`. Normalization helper: `normalize_yes_no()` in `lib/prompts.sh`.
 
 ## Compatibility
 - Targets macOS bash 3.2 (ships with macOS) — no bash 4+ features used

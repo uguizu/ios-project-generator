@@ -449,7 +449,7 @@ enum SampleAPI {
 
 extension SampleAPI: Endpoint {
     var baseURL: URL {
-        // Load from configuration (set in Debug.xcconfig / Release.xcconfig)
+        // Load from configuration (set in target-specific xcconfig)
         URL(string: Configuration.baseURL)!
     }
 
@@ -623,21 +623,45 @@ EOF
 generate_configuration() {
     local base_dir="$1"
 
-    cat <<EOF > "${base_dir}/Sources/Configuration/Debug.xcconfig"
-// Debug.xcconfig
-// Configuration settings for Debug builds
+    # Production.xcconfig (always generated)
+    cat <<EOF > "${base_dir}/Sources/Configuration/Production.xcconfig"
+// Production.xcconfig
+// Configuration settings for the Production target
 
 // API Configuration
 API_BASE_URL = https:/\$()/api.example.com
+
+// App Display Name
+APP_DISPLAY_NAME = ${DISPLAY_NAME}
 EOF
 
-    cat <<EOF > "${base_dir}/Sources/Configuration/Release.xcconfig"
-// Release.xcconfig
-// Configuration settings for Release builds
+    # QA.xcconfig (conditional)
+    if [[ "$QA_TARGET" == "yes" ]]; then
+        cat <<EOF > "${base_dir}/Sources/Configuration/QA.xcconfig"
+// QA.xcconfig
+// Configuration settings for the QA target
 
 // API Configuration
-API_BASE_URL = https:/\$()/api.example.com
+API_BASE_URL = https:/\$()/qa.api.example.com
+
+// App Display Name
+APP_DISPLAY_NAME = ${DISPLAY_NAME} QA
 EOF
+    fi
+
+    # Development.xcconfig (conditional)
+    if [[ "$DEV_TARGET" == "yes" ]]; then
+        cat <<EOF > "${base_dir}/Sources/Configuration/Development.xcconfig"
+// Development.xcconfig
+// Configuration settings for the Development target
+
+// API Configuration
+API_BASE_URL = https:/\$()/dev.api.example.com
+
+// App Display Name
+APP_DISPLAY_NAME = ${DISPLAY_NAME} Dev
+EOF
+    fi
 }
 
 # ─── Utils ────────────────────────────────────────────────────────────────────
@@ -649,14 +673,19 @@ generate_utils() {
 import Foundation
 
 /// Application configuration values from Info.plist
+///
+/// Values are defined in target-specific xcconfig files:
+/// - Production.xcconfig (Production target)
+/// - QA.xcconfig (QA target)
+/// - Development.xcconfig (Development target)
 enum Configuration {
     /// Base URL for API requests
     ///
-    /// This value is set in Debug.xcconfig and Release.xcconfig files
+    /// This value is set in the target's xcconfig file
     /// and injected into Info.plist during build.
     static var baseURL: String {
         guard let urlString = Bundle.main.object(forInfoDictionaryKey: "APIBaseURL") as? String else {
-            fatalError("APIBaseURL not found in Info.plist. Check Debug.xcconfig and Release.xcconfig.")
+            fatalError("APIBaseURL not found in Info.plist. Check your target's xcconfig file.")
         }
         return urlString
     }

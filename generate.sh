@@ -31,6 +31,8 @@ SWIFT_VERSION=""
 OUTPUT_DIR=""
 GIT_INIT=""
 GIT_COMMIT=""
+QA_TARGET=""
+DEV_TARGET=""
 
 parse_arguments() {
     while [[ $# -gt 0 ]]; do
@@ -81,6 +83,14 @@ parse_arguments() {
                 ;;
             --git-commit)
                 GIT_COMMIT="$2"
+                shift 2
+                ;;
+            --qa-target)
+                QA_TARGET="$2"
+                shift 2
+                ;;
+            --dev-target)
+                DEV_TARGET="$2"
                 shift 2
                 ;;
             *)

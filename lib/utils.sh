@@ -90,6 +90,12 @@ ${BOLD}OPTIONS:${NC}
     ${BOLD}--git-commit${NC}
         Create initial git commit (yes/no)
 
+    ${BOLD}--qa-target${NC} <yes/no>
+        Generate QA app target (default: yes)
+
+    ${BOLD}--dev-target${NC} <yes/no>
+        Generate Development app target (default: yes)
+
     ${BOLD}--help, -h${NC}
         Show this help message
 
@@ -107,6 +113,9 @@ ${BOLD}EXAMPLES:${NC}
     ${DIM}# Complete non-interactive generation${NC}
     ./generate.sh --defaults --name BrandApp --color "#FF5733" \\
                   --git-init yes --git-commit yes
+
+    ${DIM}# Production-only (no QA/Dev targets)${NC}
+    ./generate.sh --defaults --name MyApp --qa-target no --dev-target no
 
 ${BOLD}COLORS:${NC}
     blue     ${DIM}Professional, default${NC}
