@@ -96,6 +96,9 @@ ${BOLD}OPTIONS:${NC}
     ${BOLD}--dev-target${NC} <yes/no>
         Generate Development app target (default: yes)
 
+    ${BOLD}--fastlane${NC} <yes/no>
+        Generate Fastlane automation files (default: yes)
+
     ${BOLD}--help, -h${NC}
         Show this help message
 

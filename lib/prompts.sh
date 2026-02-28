@@ -51,7 +51,7 @@ collect_inputs() {
 
     # First, show all values that were provided via args
     local has_args=false
-    if [[ -n "$PROJECT_NAME" || -n "$DISPLAY_NAME" || -n "$PRIMARY_COLOR" || -n "$ORG_NAME" || -n "$BUNDLE_ID_PREFIX" || -n "$DEPLOYMENT_TARGET" || -n "$SWIFT_VERSION" || -n "$OUTPUT_DIR" || -n "$QA_TARGET" || -n "$DEV_TARGET" ]]; then
+    if [[ -n "$PROJECT_NAME" || -n "$DISPLAY_NAME" || -n "$PRIMARY_COLOR" || -n "$ORG_NAME" || -n "$BUNDLE_ID_PREFIX" || -n "$DEPLOYMENT_TARGET" || -n "$SWIFT_VERSION" || -n "$OUTPUT_DIR" || -n "$QA_TARGET" || -n "$DEV_TARGET" || -n "$FASTLANE" ]]; then
         has_args=true
         echo -e "${DIM}Values provided via command-line arguments:${NC}"
         echo ""
@@ -71,6 +71,7 @@ collect_inputs() {
         [[ -n "$OUTPUT_DIR" ]] && echo -e "  ${BLUE}📁${NC} Output directory: ${GREEN}$OUTPUT_DIR${NC}"
         [[ -n "$QA_TARGET" ]] && echo -e "  ${BLUE}🎯${NC} QA target: ${GREEN}$QA_TARGET${NC}"
         [[ -n "$DEV_TARGET" ]] && echo -e "  ${BLUE}🎯${NC} Dev target: ${GREEN}$DEV_TARGET${NC}"
+        [[ -n "$FASTLANE" ]] && echo -e "  ${BLUE}🚀${NC} Fastlane: ${GREEN}$FASTLANE${NC}"
         echo ""
     fi
 
@@ -203,6 +204,14 @@ collect_inputs() {
         DEV_TARGET="${dev_choice:-Y}"
     fi
 
+    # Fastlane Automation
+    if [[ -z "$FASTLANE" ]]; then
+        local fastlane_choice
+        echo -ne "  ${CYAN}◆${NC} Generate Fastlane automation? ${DIM}[Y/n]${NC}: "
+        read -r fastlane_choice
+        FASTLANE="${fastlane_choice:-Y}"
+    fi
+
     # Derived values
     PROJECT_NAME_LOWER=$(echo "$PROJECT_NAME" | tr '[:upper:]' '[:lower:]')
     FULL_BUNDLE_ID="${BUNDLE_ID_PREFIX}.${PROJECT_NAME_LOWER}"
@@ -210,6 +219,7 @@ collect_inputs() {
     # Normalize target flags
     QA_TARGET=$(normalize_yes_no "$QA_TARGET")
     DEV_TARGET=$(normalize_yes_no "$DEV_TARGET")
+    FASTLANE=$(normalize_yes_no "$FASTLANE")
 
     # Show summary and confirm
     show_configuration_summary
@@ -240,6 +250,7 @@ apply_default_values() {
     GIT_COMMIT="${GIT_COMMIT:-no}"
     QA_TARGET=$(normalize_yes_no "${QA_TARGET:-yes}")
     DEV_TARGET=$(normalize_yes_no "${DEV_TARGET:-yes}")
+    FASTLANE=$(normalize_yes_no "${FASTLANE:-yes}")
 
     # Validate provided values
     if ! validate_project_name "$PROJECT_NAME"; then
@@ -291,6 +302,7 @@ show_configuration_summary() {
     printf "${CYAN}║${NC}  %-22s ${GREEN}%-30s${NC} ${CYAN}║${NC}\n" "Full Bundle ID:" "$FULL_BUNDLE_ID"
     printf "${CYAN}║${NC}  %-22s ${GREEN}%-30s${NC} ${CYAN}║${NC}\n" "QA Target:" "$QA_TARGET"
     printf "${CYAN}║${NC}  %-22s ${GREEN}%-30s${NC} ${CYAN}║${NC}\n" "Dev Target:" "$DEV_TARGET"
+    printf "${CYAN}║${NC}  %-22s ${GREEN}%-30s${NC} ${CYAN}║${NC}\n" "Fastlane:" "$FASTLANE"
     echo -e "${CYAN}╚═══════════════════════════════════════════════════════════╝${NC}"
     echo ""
 }

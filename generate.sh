@@ -15,6 +15,8 @@ source "${SCRIPT_DIR}/lib/templates/swift_sources.sh"
 source "${SCRIPT_DIR}/lib/templates/colors.sh"
 source "${SCRIPT_DIR}/lib/templates/tests.sh"
 source "${SCRIPT_DIR}/lib/templates/claude_md.sh"
+source "${SCRIPT_DIR}/lib/templates/readme.sh"
+source "${SCRIPT_DIR}/lib/templates/fastlane.sh"
 source "${SCRIPT_DIR}/lib/git.sh"
 
 # ─── Argument Parsing ─────────────────────────────────────────────────────────
@@ -33,6 +35,7 @@ GIT_INIT=""
 GIT_COMMIT=""
 QA_TARGET=""
 DEV_TARGET=""
+FASTLANE=""
 
 parse_arguments() {
     while [[ $# -gt 0 ]]; do
@@ -93,6 +96,10 @@ parse_arguments() {
                 DEV_TARGET="$2"
                 shift 2
                 ;;
+            --fastlane)
+                FASTLANE="$2"
+                shift 2
+                ;;
             *)
                 echo -e "${RED}Error: Unknown option $1${NC}"
                 echo "Run './generate.sh --help' for usage information."
@@ -105,12 +112,14 @@ parse_arguments() {
 # ─── Main ─────────────────────────────────────────────────────────────────────
 
 main() {
-    local total_steps=11
+    local total_steps=12
 
     parse_arguments "$@"
 
     print_banner
     collect_inputs
+
+    [[ "$FASTLANE" == "yes" ]] && total_steps=$((total_steps + 1))
 
     local base_dir="${OUTPUT_DIR}/${PROJECT_NAME}"
 
@@ -163,6 +172,16 @@ main() {
     print_step 11 $total_steps "Generating CLAUDE.md..."
     generate_claude_md "$base_dir"
     print_success "CLAUDE.md generated."
+
+    print_step 12 $total_steps "Generating README.md..."
+    generate_readme "$base_dir"
+    print_success "README.md generated."
+
+    if [[ "$FASTLANE" == "yes" ]]; then
+        print_step $total_steps $total_steps "Generating Fastlane automation..."
+        generate_fastlane "$base_dir"
+        print_success "Fastlane configuration generated."
+    fi
 
     echo ""
     init_git_repo "$base_dir"
