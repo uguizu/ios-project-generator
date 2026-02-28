@@ -36,6 +36,7 @@ fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots/**/*.png
 fastlane/test_output
+fastlane/README.md
 
 # Secrets / Environment
 .env

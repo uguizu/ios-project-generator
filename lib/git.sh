@@ -47,15 +47,35 @@ print_summary() {
     print_success "Project '${PROJECT_NAME}' generated successfully!"
     echo -e "${BOLD}══════════════════════════════════════════${NC}"
     echo ""
-    echo "Next steps:"
-    echo "  1. cd ${base_dir}"
-    echo "  2. xcodegen generate"
-    echo "  3. open ${PROJECT_NAME}.xcodeproj"
+    if [[ "$FASTLANE" == "yes" ]]; then
+        echo "Next steps:"
+        echo "  1. cd ${base_dir}"
+        echo "  2. ./scripts/setup.sh"
+        echo "  3. open ${PROJECT_NAME}.xcodeproj"
+        echo ""
+        echo "Available scripts:"
+        echo "  ./scripts/setup.sh           Install dependencies & generate Xcode project"
+        echo "  ./scripts/certificates.sh    Download signing certificates"
+        echo "  ./scripts/build.sh           Build IPA"
+        echo "  ./scripts/testflight.sh      Build & upload to TestFlight"
+    else
+        echo "Next steps:"
+        echo "  1. cd ${base_dir}"
+        echo "  2. xcodegen generate"
+        echo "  3. open ${PROJECT_NAME}.xcodeproj"
+    fi
+
     echo ""
 
     if ! command -v xcodegen &> /dev/null; then
         echo -e "${YELLOW}Note: xcodegen is not installed. Install it with:${NC}"
         echo "    brew install xcodegen"
+        echo ""
+    fi
+
+    if [[ "$FASTLANE" == "yes" ]] && ! command -v bundle &> /dev/null; then
+        echo -e "${YELLOW}Note: Bundler is not installed. Install it with:${NC}"
+        echo "    gem install bundler"
         echo ""
     fi
 }

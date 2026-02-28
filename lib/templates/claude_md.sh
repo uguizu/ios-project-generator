@@ -284,4 +284,43 @@ EOF
 - \`Sources/Resources/ThemeColors.swift\` — Material 3 UIColor definitions (light/dark)
 - \`Sources/Resources/Color+ThemeColors.swift\` — SwiftUI Color wrappers (\`Color.Theme.xxx\`)
 EOF
+
+    # Fastlane section (conditional)
+    if [[ "$FASTLANE" == "yes" ]]; then
+        cat <<EOF >> "${base_dir}/CLAUDE.md"
+
+## Automation
+
+This project includes scripts that wrap [Fastlane](https://fastlane.tools/) for build automation.
+
+### Scripts
+\`\`\`bash
+./scripts/setup.sh               # Install dependencies and generate Xcode project
+./scripts/certificates.sh        # Download signing certificates and provisioning profiles
+./scripts/build.sh               # Build Production IPA (saved to ./build/)
+./scripts/build.sh ${PROJECT_NAME}QA   # Build a specific target
+./scripts/testflight.sh          # Build and upload Production to TestFlight
+./scripts/testflight.sh ${PROJECT_NAME}QA   # Upload a specific target
+\`\`\`
+
+### First-Time Setup
+1. \`./scripts/setup.sh\`
+2. Edit \`fastlane/Appfile\` — set your Apple ID and Team ID
+3. Edit \`fastlane/Matchfile\` — set your certificates git repo URL
+4. \`./scripts/certificates.sh\`
+
+### Fastlane (Advanced)
+The scripts above are wrappers around these Fastlane lanes:
+- \`bundle exec fastlane certificates\` — Download certs and profiles
+- \`bundle exec fastlane build target:<TargetName>\` — Build IPA
+- \`bundle exec fastlane beta target:<TargetName>\` — Build and upload to TestFlight
+
+### Key Files
+- \`scripts/\` — Wrapper scripts (setup, certificates, build, testflight)
+- \`Gemfile\` — Ruby dependencies (Fastlane)
+- \`fastlane/Appfile\` — App identifier and team configuration
+- \`fastlane/Matchfile\` — Certificate management configuration
+- \`fastlane/Fastfile\` — Lane definitions (build, upload, certificates)
+EOF
+    fi
 }

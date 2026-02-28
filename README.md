@@ -11,6 +11,7 @@
 - 🧪 **Testing Ready** — Pre-configured unit and UI tests with Swift Testing (Swift 6) and XCTest (Swift 5)
 - 📦 **Zero Dependencies** — Pure bash, runs on macOS with native tools (osascript for M3 colors)
 - 🚀 **XcodeGen Integration** — Project configuration as code (`project.yml`)
+- 🚀 **Fastlane Automation** — Optional Fastlane setup for certificates, IPA builds, and TestFlight uploads
 - 🎯 **CLI Support** — Interactive mode, defaults mode, or full parameter injection for automation
 - 💅 **Beautiful UI** — Color-coded prompts with icons and enhanced formatting
 
@@ -71,7 +72,8 @@ The generator will prompt you for:
 8. **Output Directory** — Where to generate the project
 9. **QA Target** — Generate QA app target (default: yes)
 10. **Development Target** — Generate Development app target (default: yes)
-11. **Git Initialization** — Optionally create initial commit
+11. **Fastlane Automation** — Generate Fastlane automation files (default: yes)
+12. **Git Initialization** — Optionally create initial commit
 
 ### 2. Defaults Mode (Quick Generation)
 
@@ -92,6 +94,7 @@ Skip all prompts and use default values:
 - Output Directory: `.`
 - QA Target: `yes`
 - Dev Target: `yes`
+- Fastlane: `yes`
 - Git Init: `no`
 
 ### 3. Parameter Injection (Automation)
@@ -125,6 +128,7 @@ Provide specific values via CLI arguments:
 | `--git-commit <yes/no>` | Create initial commit | `--git-commit yes` |
 | `--qa-target <yes/no>` | Generate QA app target (default: yes) | `--qa-target no` |
 | `--dev-target <yes/no>` | Generate Development app target (default: yes) | `--dev-target no` |
+| `--fastlane <yes/no>` | Generate Fastlane automation files (default: yes) | `--fastlane no` |
 | `--help, -h` | Show help message | `--help` |
 
 ### Interactive UI Preview
@@ -158,6 +162,17 @@ MyApp/
 ├── project.yml                          # XcodeGen configuration (source of truth)
 ├── .gitignore
 ├── CLAUDE.md                            # AI assistant instructions
+├── README.md                            # Project documentation
+├── Gemfile                              # Fastlane dependencies (optional)
+├── scripts/                             # Developer-friendly wrapper scripts (optional)
+│   ├── setup.sh                         # Install deps & generate Xcode project
+│   ├── certificates.sh                  # Download signing certificates
+│   ├── build.sh                         # Build IPA
+│   └── testflight.sh                    # Build & upload to TestFlight
+├── fastlane/                            # Fastlane automation (optional)
+│   ├── Appfile                          # App identifier & team config
+│   ├── Matchfile                        # Certificate management config
+│   └── Fastfile                         # Lane definitions
 ├── Sources/
 │   ├── MyAppApp.swift                   # App entry point
 │   ├── Modules/
@@ -284,6 +299,39 @@ Values are injected into Info.plist during build and accessed via `Bundle.main`.
 ./generate.sh --defaults --qa-target no --dev-target no
 ```
 
+### Fastlane Automation
+
+Generated projects optionally include [Fastlane](https://fastlane.tools/) for build automation, wrapped in simple scripts that require no Fastlane knowledge:
+
+```bash
+./scripts/setup.sh               # Install dependencies & generate Xcode project
+./scripts/certificates.sh        # Download signing certificates
+./scripts/build.sh               # Build Production IPA
+./scripts/build.sh MyAppQA       # Build specific target IPA
+./scripts/testflight.sh          # Upload Production to TestFlight
+./scripts/testflight.sh MyAppQA  # Upload specific target
+```
+
+**First-time setup:**
+1. `./scripts/setup.sh`
+2. Edit `fastlane/Appfile` — set Apple ID and Team ID
+3. Edit `fastlane/Matchfile` — set certificates git repo URL
+4. `./scripts/certificates.sh`
+
+**Generated files:**
+- `scripts/` — Developer-friendly wrapper scripts (setup, certificates, build, testflight)
+- `Gemfile` — Fastlane dependency
+- `fastlane/Appfile` — App identifier and team configuration
+- `fastlane/Matchfile` — Certificate management via git-synced profiles
+- `fastlane/Fastfile` — Lanes for building, signing, and uploading
+
+The Matchfile automatically includes bundle IDs for all enabled targets (Production, QA, Dev). Convenience lanes and build scripts adapt to the enabled targets.
+
+**Without Fastlane:**
+```bash
+./generate.sh --defaults --fastlane no
+```
+
 ### Testing
 
 Generated projects include test targets with mock implementations:
@@ -326,7 +374,9 @@ ios-start-script/
 │       ├── swift_sources.sh       # Network, services, app files
 │       ├── colors.sh              # M3 color generation
 │       ├── tests.sh
-│       └── claude_md.sh
+│       ├── claude_md.sh
+│       ├── readme.sh              # Project README
+│       └── fastlane.sh            # Fastlane automation & scripts
 └── CLAUDE.md                      # Project instructions
 ```
 
